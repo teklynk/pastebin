@@ -28,3 +28,4 @@ To deactivate the virtual environment, simply run:
 ```zsh
 deactivate
 ```
+

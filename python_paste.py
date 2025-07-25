@@ -3,6 +3,7 @@ import sqlite3
 import uuid
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -11,6 +12,33 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["200 per day", "50 per hour"]
 )
+
+def init_db():
+    conn = sqlite3.connect('pastebin.db')
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS pastes (
+            id TEXT PRIMARY KEY,
+            content TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+def delete_old_pastes(days=90):
+    conn = sqlite3.connect('pastebin.db')
+    c = conn.cursor()
+    
+    ninety_days_ago = datetime.now() - timedelta(days=days)
+    
+    c.execute('''
+        DELETE FROM pastes
+        WHERE created_at < ?
+    ''', (ninety_days_ago,))
+    
+    conn.commit()
+    conn.close()
 
 @app.route('/', methods=['GET', 'POST'])
 @limiter.limit("50 per minute")
@@ -54,4 +82,9 @@ def raw_paste(paste_id):
         return redirect('/')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Create the database if it does not exist
+    init_db()
+    # Delete old pastes older than 90 days
+    delete_old_pastes()
+    # Start the Flask application
+    app.run(debug=True, port=5000)
