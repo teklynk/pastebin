@@ -2,15 +2,17 @@ from flask import Flask, request, render_template, make_response, redirect, url_
 import sqlite3
 import uuid
 from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
+def get_real_ip():
+    # Use Cloudflare's header if present, else fallback to remote address
+    return request.headers.get('CF-Connecting-IP', request.remote_addr)
+
 limiter = Limiter(
     app,
-    key_func=get_remote_address,
-    default_limits=["6000 per day", "600 per hour"]
+    key_func=get_real_ip
 )
 
 def init_db():
@@ -41,7 +43,7 @@ def delete_old_pastes(days=90):
     conn.close()
 
 @app.route('/', methods=['GET', 'POST'])
-@limiter.limit("50 per minute")
+@limiter.limit("120 per minute")
 def index():
     if request.method == 'POST':
         content = request.form['paste_content']
