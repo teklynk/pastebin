@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,12 +8,12 @@
     <link rel="icon" href="{{ url_for('static', filename='assets/favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
     <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+    <!-- Made with love by Teklynk https://github.com/teklynk/pastebin -->
 </head>
-
 <body>
     <form method="post">
-        <div class="">
-            <button class="btn sticky-button" type="submit" tabindex="0">Save</button>
+        <div class="sticky-button">
+            <button class="btn" type="submit" tabindex="0">Save</button>
         </div>
         <div>
             <textarea placeholder="Paste here and click Save" spellcheck="false" autocorrect="off" autocapitalize="off"
@@ -22,8 +21,5 @@
                 tabindex="0"></textarea>
         </div>
     </form>
-    </div>
-
 </body>
-
 </html>

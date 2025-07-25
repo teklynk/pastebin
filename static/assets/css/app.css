@@ -17,6 +17,7 @@ textarea.pastebin-textarea {
   outline: none;
   min-height: 75vh;
   resize: none;
+  margin-top: 20px;
 }
 
 .mt-0 {
@@ -93,4 +94,8 @@ textarea.pastebin-textarea {
 
 td.hljs-ln-numbers {
   padding-right: 20px !important;
+}
+
+pre code.hljs {
+    padding: 0 !important;
 }
