@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, make_response, redirect, url_for
 import sqlite3
 import uuid
 from flask_limiter import Limiter
@@ -46,7 +46,10 @@ def raw_paste(paste_id):
     result = c.fetchone()
     conn.close()
     if result:
-        return render_template('raw.html', content=result[0])
+        raw = render_template('raw.txt', content=result[0])
+        response = make_response(raw)
+        response.headers['Content-Type'] = 'text/plain'
+        return response
     else:
         return redirect('/')
 
