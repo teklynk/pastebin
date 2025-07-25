@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1f232b">
+    <title>Paste</title>
+    <link rel="icon" href="{{ url_for('static', filename='assets/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
+    <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+</head>
+
+<body>
+    <form method="post">
+        <div class="">
+            <button class="btn sticky-button" type="submit" tabindex="0">Save</button>
+        </div>
+        <div>
+            <textarea placeholder="Paste here and click Save" spellcheck="false" autocorrect="off" autocapitalize="off"
+                autofocus class="pastebin-textarea" name="paste_content" id="paste_content" rows="10" cols="80"
+                tabindex="0"></textarea>
+        </div>
+    </form>
+    </div>
+
+</body>
+
+</html>
