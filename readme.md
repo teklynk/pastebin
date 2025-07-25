@@ -20,7 +20,7 @@
 5. Run the script as usual:
 
    ```bash
-   python3 app.py
+   python3 python_paste.py
    ```
 
 To deactivate the virtual environment, simply run:
