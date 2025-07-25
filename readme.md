@@ -34,3 +34,5 @@ This project can also run inside a docker container
 ```bash
 docker-compose up --build
 ```
+## Notes:
+Each time the app starts, it will delete pastes that are older than 90 days. This is to help keep the database small and remove any old pastes. You can remove this feature by commenting out `delete_old_pastes()` towards the bottom of `python_paste.py`.

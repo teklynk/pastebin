@@ -1,10 +1,16 @@
 body {
   background: #1f232b;
-  padding: 20px 50px;
+  padding: 10px;
   margin: 0px;
   color: #839496;
   font-family: monospace;
   font-size: 1rem;
+}
+
+@media only screen and (max-width: 768px) {
+  body {
+    font-size: .7rem;
+  }
 }
 
 textarea.pastebin-textarea {
@@ -17,7 +23,11 @@ textarea.pastebin-textarea {
   outline: none;
   min-height: 75vh;
   resize: none;
-  margin-top: 20px;
+  margin-top: 50px;
+}
+
+div.pastebin-view {
+  margin-top: 50px;
 }
 
 .mt-0 {
@@ -74,7 +84,7 @@ textarea.pastebin-textarea {
 
 .btn {
   padding: 0.5rem 1rem;
-  font-size: 1.25rem;
+  font-size: 1rem;
   border: none;
   background-color: #839496;
   color: #fff;
@@ -84,7 +94,7 @@ textarea.pastebin-textarea {
 .sticky-button {
   position: fixed;
   top: 20px;
-  right: 50px;
+  right: 20px;
   z-index: 1000;
 }
 
@@ -96,6 +106,6 @@ td.hljs-ln-numbers {
   padding-right: 20px !important;
 }
 
-pre code.hljs {
+code.hljs {
     padding: 0 !important;
 }
