@@ -10,7 +10,7 @@ app = Flask(__name__)
 limiter = Limiter(
     app,
     key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
+    default_limits=["6000 per day", "600 per hour"]
 )
 
 def init_db():
