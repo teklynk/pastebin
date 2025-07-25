@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.10-slim-bookworm
 
 WORKDIR /app
 
@@ -13,4 +13,4 @@ COPY . .
 EXPOSE 5000
 
 # Run the application
-CMD ["python", "python_paste.py"]
+CMD ["python3", "python_paste.py"]
