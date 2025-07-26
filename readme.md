@@ -19,7 +19,7 @@ Supports rate limiting, CSRF protection, and automatic cleanup of old pastes.
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/python_paste.git
+   git clone https://github.com/teklynk/python_paste.git
    cd python_paste
    ```
 
