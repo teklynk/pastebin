@@ -35,4 +35,6 @@ This project can also run inside a docker container
 docker-compose up --build
 ```
 ## Notes:
-Each time the app starts, it will delete pastes that are older than 90 days. This is to help keep the database small and remove any old pastes. You can remove this feature by commenting out `delete_old_pastes()` towards the bottom of `python_paste.py`.
+- If you are running this with `python3 python_paste.py`, rename sample.env to .env and update the variables.
+- If you are using docker and `docker-compose.yml`, rename sample.docker-compose.yml to docker-compose.yml and update the environment variables.
+- Each time the app starts, it will delete pastes that are older than 90 days. This is to help keep the database small and remove any old pastes. You can remove this feature by commenting out `delete_old_pastes()` towards the bottom of `python_paste.py`.
