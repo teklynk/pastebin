@@ -9,3 +9,5 @@ services:
       - .:/app
     environment:
       - FLASK_ENV=development
+      - SECRET_KEY=
+      - ALLOWED_DOMAIN=
