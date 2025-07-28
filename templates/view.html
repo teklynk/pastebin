@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,14 +9,15 @@
     <link rel="icon" href="{{ url_for('static', filename='assets/favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/atom-one-dark.min.css') }}">
-    <script src="{{ url_for('static', filename='assets/js/highlight.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/highlightjs-line-numbers.min.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='assets/js/highlight.min.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='assets/js/highlightjs-line-numbers.min.js') }}"></script>
     <script>
         hljs.highlightAll();
         hljs.initLineNumbersOnLoad();
     </script>
-    <!-- Made with love by Teklynk https://github.com/teklynk/pastebin -->
+    <!-- Made with love by Teklynk: https://github.com/teklynk/pastebin -->
 </head>
+
 <body>
     <div class="sticky-button">
         <a href="/"><button class="btn" type="button">Create</button></a>
@@ -27,4 +29,5 @@
         </pre>
     </div>
 </body>
+
 </html>

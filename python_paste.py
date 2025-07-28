@@ -51,7 +51,7 @@ def delete_old_pastes(days=90):
     conn.close()
 
 @app.route('/', methods=['GET', 'POST'])
-@limiter.limit("120 per minute")
+@limiter.limit("60 per minute")
 def index():
     allowed_domain = os.getenv('ALLOWED_DOMAIN')
     form = PasteForm()
