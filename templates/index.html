@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1f232b">
-    <title>Paste</title>
-    <link rel="icon" href="{{ url_for('static', filename='assets/favicon.ico') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
-    <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
-    <!-- Made with love by Teklynk: https://github.com/teklynk/pastebin -->
-</head>
+{% include 'includes/header.html' %}
 
 <body>
     <form method="post" id="pastebin-form">
@@ -24,6 +15,9 @@
                 tabindex="0"></textarea>
         </div>
     </form>
+
+    {% include 'includes/footer.html' %}
+
 </body>
 
 </html>

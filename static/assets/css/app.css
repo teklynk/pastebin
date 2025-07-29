@@ -4,12 +4,29 @@ body {
   margin: 0px;
   color: #839496;
   font-family: monospace;
-  font-size: 1rem;
+  font-size: .9rem;
+}
+
+footer {
+  a {
+    &:link {
+      color: #839496;
+      text-decoration: none;
+    }
+    &:visited {
+      color: #839496;
+      text-decoration: none;
+    }
+    &:hover {
+      color: #839496;
+      text-decoration: underline;
+    }
+  }
 }
 
 @media only screen and (max-width: 768px) {
   body {
-    font-size: .7rem;
+    font-size: .6rem;
   }
 }
 
@@ -28,6 +45,11 @@ textarea.pastebin-textarea {
 
 div.pastebin-view {
   margin-top: 50px;
+  min-height: 75vh;
+}
+
+.text-center {
+  text-align: center !important;
 }
 
 .mt-0 {
