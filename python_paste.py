@@ -1,12 +1,10 @@
+import os, sqlite3, uuid
 from flask import Flask, request, render_template, make_response, redirect, url_for
-import sqlite3
-import uuid
 from flask_limiter import Limiter
 from datetime import datetime, timedelta
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField
 from wtforms.validators import DataRequired
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
