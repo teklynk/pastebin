@@ -1,5 +1,5 @@
 import os, sqlite3, uuid, time, threading
-from flask import Flask, request, render_template, make_response, redirect, url_for, session
+from flask import Flask, request, render_template, make_response, redirect, url_for
 from flask_limiter import Limiter
 from datetime import datetime, timedelta
 from flask_wtf import FlaskForm
@@ -99,7 +99,6 @@ def index():
             c.execute('INSERT INTO pastes (id, content, burn_after_reading, views_left) VALUES (?, ?, ?, ?)', (paste_id, encrypted_content, burn, views_left))
             conn.commit()
             conn.close()
-            session[f'viewed_{paste_id}'] = True
             return redirect(url_for('view_paste', paste_id=paste_id))
     return render_template('index.html', form=form)
 
