@@ -35,6 +35,8 @@ encryption_key = ensure_encryption_key()
 fernet = Fernet(encryption_key)
 # Read expiration days from environment, default to 90 if not set
 EXPIRATION_DAYS = int(os.getenv('PASTEBIN_EXPIRATION_DAYS', 90))
+# Burn after reading - Number of views left before deletion. default to 3 if not set
+BURN_VIEWS = int(os.getenv('BURN_AFTER_READING_VIEWS', 3))
 
 def get_real_ip():
     # Use Cloudflare's header if present, else fallback to remote address
@@ -53,7 +55,8 @@ def init_db():
             id TEXT PRIMARY KEY,
             content TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            burn_after_reading INTEGER DEFAULT 0
+            burn_after_reading INTEGER DEFAULT 0,
+            views_left INTEGER DEFAULT 3
         )
     ''')
     conn.commit()
@@ -88,11 +91,12 @@ def index():
         if form.validate_on_submit():
             content = form.paste_content.data
             burn = 1 if form.burn_after_reading.data else 0
+            views_left = BURN_VIEWS if burn else None
             encrypted_content = fernet.encrypt(content.encode())
             paste_id = str(uuid.uuid4())[:8]
             conn = sqlite3.connect('pastebin.db')
             c = conn.cursor()
-            c.execute('INSERT INTO pastes (id, content, burn_after_reading) VALUES (?, ?, ?)', (paste_id, encrypted_content, burn))
+            c.execute('INSERT INTO pastes (id, content, burn_after_reading, views_left) VALUES (?, ?, ?, ?)', (paste_id, encrypted_content, burn, views_left))
             conn.commit()
             conn.close()
             session[f'viewed_{paste_id}'] = True
@@ -103,7 +107,7 @@ def index():
 def view_paste(paste_id):
     conn = sqlite3.connect('pastebin.db')
     c = conn.cursor()
-    c.execute('SELECT content, burn_after_reading FROM pastes WHERE id = ?', (paste_id,))
+    c.execute('SELECT content, burn_after_reading, views_left FROM pastes WHERE id = ?', (paste_id,))
     result = c.fetchone()
     if result:
         try:
@@ -112,9 +116,13 @@ def view_paste(paste_id):
             conn.close()
             return redirect('/')
         burn = result[1]
-        # Only burn if not just created in this session
-        if burn and not session.pop(f'viewed_{paste_id}', None):
-            c.execute('DELETE FROM pastes WHERE id = ?', (paste_id,))
+        views_left = result[2]
+        if burn and views_left is not None:
+            views_left -= 1
+            if views_left <= 0:
+                c.execute('DELETE FROM pastes WHERE id = ?', (paste_id,))
+            else:
+                c.execute('UPDATE pastes SET views_left = ? WHERE id = ?', (views_left, paste_id))
             conn.commit()
         conn.close()
         return render_template('view.html', content=decrypted_content, paste_id=paste_id)
@@ -126,7 +134,7 @@ def view_paste(paste_id):
 def raw_paste(paste_id):
     conn = sqlite3.connect('pastebin.db')
     c = conn.cursor()
-    c.execute('SELECT content, burn_after_reading FROM pastes WHERE id = ?', (paste_id,))
+    c.execute('SELECT content, burn_after_reading, views_left FROM pastes WHERE id = ?', (paste_id,))
     result = c.fetchone()
     if result:
         try:
@@ -135,8 +143,13 @@ def raw_paste(paste_id):
             conn.close()
             return redirect('/')
         burn = result[1]
-        if burn and not session.pop(f'viewed_{paste_id}', None):
-            c.execute('DELETE FROM pastes WHERE id = ?', (paste_id,))
+        views_left = result[2]
+        if burn and views_left is not None:
+            views_left -= 1
+            if views_left <= 0:
+                c.execute('DELETE FROM pastes WHERE id = ?', (paste_id,))
+            else:
+                c.execute('UPDATE pastes SET views_left = ? WHERE id = ?', (views_left, paste_id))
             conn.commit()
         conn.close()
         raw = render_template('raw.txt', content=decrypted_content)
@@ -161,4 +174,5 @@ if __name__ == '__main__':
     init_db()
     # Start background cleanup thread
     threading.Thread(target=daily_cleanup, daemon=True).start()
+    # Start the app
     app.run(debug=True, host="0.0.0.0", port=5000)

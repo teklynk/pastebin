@@ -11,6 +11,7 @@ Supports rate limiting, CSRF protection, encrypted contents and automatic cleanu
 - CSRF protection for POST requests
 - Encrypted pastes
 - Automatic deletion of pastes older than (user defined)
+- Burn after reading
 - Configurable via environment variables
 - Runs locally or in Docker
 
@@ -64,6 +65,6 @@ Supports rate limiting, CSRF protection, encrypted contents and automatic cleanu
 - On first run, the app will generated a `ENCRYPTION_KEY` and save it to the `.env` if it does not already exist. Fernet key must be 32 url-safe base64-encoded bytes.
 - If running locally, ensure `.env` is present and configured. `ENCRYPTION_KEY` key must be 32 url-safe base64-encoded bytes.
 - If using Docker, configure environment variables in `docker-compose.yml`. Do not use the `.env` file with docker. The `.env` is only needed when running the app locally with `python3 python_paste.py`.
-- Pastes older than 90 days are deleted automatically if not defined in `PASTEBIN_EXPIRATION_DAYS`.  
-  To disable this, comment out `delete_old_pastes()` in `python_paste.py`.
+- Pastes older than 90 days are deleted automatically if not defined in `PASTEBIN_EXPIRATION_DAYS`.
+- `BURN_AFTER_READING_VIEWS` is set to 3 views by default if not defined in `.env` or `docker-compose.yml`.
 - The app is designed to work behind a reverse proxy (e.g., Nginx, Cloudflare) and supports real client IP detection.

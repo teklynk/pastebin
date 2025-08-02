@@ -13,3 +13,4 @@ services:
       - ALLOWED_DOMAIN=https://yourdomain.com
       - ENCRYPTION_KEY=your-32-url-safe-base64-encryption-key
       - PASTEBIN_EXPIRATION_DAYS=90
+      - BURN_AFTER_READING_VIEWS=3
