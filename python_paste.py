@@ -1,4 +1,4 @@
-import os, sqlite3, uuid
+import os, sqlite3, uuid, time, threading
 from flask import Flask, request, render_template, make_response, redirect, url_for
 from flask_limiter import Limiter
 from datetime import datetime, timedelta
@@ -32,6 +32,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 encryption_key = ensure_encryption_key()
 fernet = Fernet(encryption_key)
+# Read expiration days from environment, default to 90 if not set
+EXPIRATION_DAYS = int(os.getenv('PASTEBIN_EXPIRATION_DAYS', 90))
 
 def get_real_ip():
     # Use Cloudflare's header if present, else fallback to remote address
@@ -55,16 +57,16 @@ def init_db():
     conn.commit()
     conn.close()
 
-def delete_pastes(days=90):
+def delete_pastes(days=EXPIRATION_DAYS):
     conn = sqlite3.connect('pastebin.db')
     c = conn.cursor()
     
-    ninety_days_ago = datetime.now() - timedelta(days=days)
+    cutoff = datetime.now() - timedelta(days=days)
     
     c.execute('''
         DELETE FROM pastes
         WHERE created_at < ?
-    ''', (ninety_days_ago,))
+    ''', (cutoff,))
     
     conn.commit()
     conn.close()
@@ -131,10 +133,14 @@ def raw_paste(paste_id):
 class PasteForm(FlaskForm):
     paste_content = TextAreaField('Paste', validators=[DataRequired()])
 
+def daily_cleanup():
+    while True:
+        delete_pastes()
+        time.sleep(86400)  # Sleep for 24 hours
+
 if __name__ == '__main__':
     # Create the database if it does not exist
     init_db()
-    # Delete old pastes older than 90 days
-    delete_pastes()
-    # Start the Flask application
+    # Start background cleanup thread
+    threading.Thread(target=daily_cleanup, daemon=True).start()
     app.run(debug=True, host="0.0.0.0", port=5000)
