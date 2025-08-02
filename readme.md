@@ -1,7 +1,7 @@
 # Python Pastebin
 
 A simple, self-hosted pastebin web application built with Flask.  
-Supports rate limiting, CSRF protection, and automatic cleanup of old pastes.
+Supports rate limiting, CSRF protection, encrypted contents and automatic cleanup of old pastes.
 
 ## Features
 
@@ -9,6 +9,7 @@ Supports rate limiting, CSRF protection, and automatic cleanup of old pastes.
 - View raw paste content
 - Rate limiting per IP address
 - CSRF protection for POST requests
+- Encrypted pastes
 - Automatic deletion of pastes older than 90 days
 - Configurable via environment variables
 - Runs locally or in Docker
@@ -52,7 +53,7 @@ Supports rate limiting, CSRF protection, and automatic cleanup of old pastes.
 
 1. **Configure environment variables:**
    - Rename `sample.docker-compose.yml` to `docker-compose.yml`
-   - Edit `docker-compose.yml` and set your `SECRET_KEY` and `ALLOWED_DOMAIN` under the `environment` section
+   - Edit `docker-compose.yml` and set your `SECRET_KEY`, `ALLOWED_DOMAIN` and `ENCRYPTION_KEY` under the `environment` section
 
 2. **Build and run the container:**
    ```bash
@@ -60,9 +61,9 @@ Supports rate limiting, CSRF protection, and automatic cleanup of old pastes.
    ```
 
 ## Notes
-
-- If running locally, ensure `.env` is present and configured.
-- If using Docker, configure environment variables in `docker-compose.yml`.
+- On first run, the app will generated a `ENCRYPTION_KEY` and save it to the `.env` if it does not already exist. Fernet key must be 32 url-safe base64-encoded bytes.
+- If running locally, ensure `.env` is present and configured. `ENCRYPTION_KEY` key must be 32 url-safe base64-encoded bytes.
+- If using Docker, configure environment variables in `docker-compose.yml`. Do not use the `.env` file with docker. The `.env` is only needed when running the app locally with `python3 python_paste.py`.
 - Pastes older than 90 days are deleted automatically on app startup.  
   To disable this, comment out `delete_old_pastes()` in `python_paste.py`.
 - The app is designed to work behind a reverse proxy (e.g., Nginx, Cloudflare) and supports real client IP detection.

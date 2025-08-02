@@ -8,11 +8,32 @@ from wtforms import TextAreaField
 from wtforms.validators import DataRequired
 import os
 from dotenv import load_dotenv
+from cryptography.fernet import Fernet
 
-load_dotenv()
+# Check if .env exists (local mode)
+LOCAL_MODE = os.path.exists('.env')
+if LOCAL_MODE:
+    load_dotenv()
+
+# Generate a key using: Fernet.generate_key() and set it in .env
+def ensure_encryption_key():
+    """Ensure ENCRYPTION_KEY exists in .env, generate and add if missing."""
+    encryption_key = os.getenv('ENCRYPTION_KEY')
+    if not encryption_key:
+        new_key = Fernet.generate_key().decode()
+        # Append to .env
+        with open('.env', 'a') as env_file:
+            env_file.write(f'\nENCRYPTION_KEY={new_key}\n')
+        print(f"Generated new ENCRYPTION_KEY and added to .env: {new_key}")
+        # Reload .env to pick up the new key
+        os.environ['ENCRYPTION_KEY'] = new_key
+        return new_key
+    return encryption_key
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+encryption_key = ensure_encryption_key()
+fernet = Fernet(encryption_key)
 
 def get_real_ip():
     # Use Cloudflare's header if present, else fallback to remote address
@@ -36,7 +57,7 @@ def init_db():
     conn.commit()
     conn.close()
 
-def delete_old_pastes(days=90):
+def delete_pastes(days=90):
     conn = sqlite3.connect('pastebin.db')
     c = conn.cursor()
     
@@ -64,10 +85,11 @@ def index():
             return "Forbidden: Invalid origin", 403
         if form.validate_on_submit():
             content = form.paste_content.data
+            encrypted_content = fernet.encrypt(content.encode())
             paste_id = str(uuid.uuid4())[:8]
             conn = sqlite3.connect('pastebin.db')
             c = conn.cursor()
-            c.execute('INSERT INTO pastes (id, content) VALUES (?, ?)', (paste_id, content))
+            c.execute('INSERT INTO pastes (id, content) VALUES (?, ?)', (paste_id, encrypted_content))
             conn.commit()
             conn.close()
             return redirect(url_for('view_paste', paste_id=paste_id))
@@ -81,7 +103,11 @@ def view_paste(paste_id):
     result = c.fetchone()
     conn.close()
     if result:
-        return render_template('view.html', content=result[0], paste_id=paste_id)
+        try:
+            decrypted_content = fernet.decrypt(result[0]).decode()
+        except Exception:
+            return redirect('/')
+        return render_template('view.html', content=decrypted_content, paste_id=paste_id)
     else:
         return redirect('/')
     
@@ -93,7 +119,11 @@ def raw_paste(paste_id):
     result = c.fetchone()
     conn.close()
     if result:
-        raw = render_template('raw.txt', content=result[0])
+        try:
+            decrypted_content = fernet.decrypt(result[0]).decode()
+        except Exception:
+            return redirect('/')
+        raw = render_template('raw.txt', content=decrypted_content)
         response = make_response(raw)
         response.headers['Content-Type'] = 'text/plain'
         return response
@@ -107,6 +137,6 @@ if __name__ == '__main__':
     # Create the database if it does not exist
     init_db()
     # Delete old pastes older than 90 days
-    delete_old_pastes()
+    delete_pastes()
     # Start the Flask application
     app.run(debug=True, host="0.0.0.0", port=5000)
