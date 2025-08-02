@@ -7,6 +7,7 @@
     <form method="post" id="pastebin-form">
         {{ form.csrf_token }}
         <div class="sticky-button">
+            {{ form.burn_after_reading() }} {{ form.burn_after_reading.label }}
             <button class="btn" type="submit" form="pastebin-form" formtarget="_self">Save</button>
         </div>
         <div>

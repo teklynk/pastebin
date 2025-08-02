@@ -1,10 +1,11 @@
 import os, sqlite3, uuid, time, threading
-from flask import Flask, request, render_template, make_response, redirect, url_for
+from flask import Flask, request, render_template, make_response, redirect, url_for, session
 from flask_limiter import Limiter
 from datetime import datetime, timedelta
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField
 from wtforms.validators import DataRequired
+from wtforms import BooleanField
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet
 
@@ -51,7 +52,8 @@ def init_db():
         CREATE TABLE IF NOT EXISTS pastes (
             id TEXT PRIMARY KEY,
             content TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            burn_after_reading INTEGER DEFAULT 0
         )
     ''')
     conn.commit()
@@ -85,13 +87,15 @@ def index():
             return "Forbidden: Invalid origin", 403
         if form.validate_on_submit():
             content = form.paste_content.data
+            burn = 1 if form.burn_after_reading.data else 0
             encrypted_content = fernet.encrypt(content.encode())
             paste_id = str(uuid.uuid4())[:8]
             conn = sqlite3.connect('pastebin.db')
             c = conn.cursor()
-            c.execute('INSERT INTO pastes (id, content) VALUES (?, ?)', (paste_id, encrypted_content))
+            c.execute('INSERT INTO pastes (id, content, burn_after_reading) VALUES (?, ?, ?)', (paste_id, encrypted_content, burn))
             conn.commit()
             conn.close()
+            session[f'viewed_{paste_id}'] = True
             return redirect(url_for('view_paste', paste_id=paste_id))
     return render_template('index.html', form=form)
 
@@ -99,39 +103,53 @@ def index():
 def view_paste(paste_id):
     conn = sqlite3.connect('pastebin.db')
     c = conn.cursor()
-    c.execute('SELECT content FROM pastes WHERE id = ?', (paste_id,))
+    c.execute('SELECT content, burn_after_reading FROM pastes WHERE id = ?', (paste_id,))
     result = c.fetchone()
-    conn.close()
     if result:
         try:
             decrypted_content = fernet.decrypt(result[0]).decode()
         except Exception:
+            conn.close()
             return redirect('/')
+        burn = result[1]
+        # Only burn if not just created in this session
+        if burn and not session.pop(f'viewed_{paste_id}', None):
+            c.execute('DELETE FROM pastes WHERE id = ?', (paste_id,))
+            conn.commit()
+        conn.close()
         return render_template('view.html', content=decrypted_content, paste_id=paste_id)
     else:
+        conn.close()
         return redirect('/')
     
 @app.route('/raw/<paste_id>')
 def raw_paste(paste_id):
     conn = sqlite3.connect('pastebin.db')
     c = conn.cursor()
-    c.execute('SELECT content FROM pastes WHERE id = ?', (paste_id,))
+    c.execute('SELECT content, burn_after_reading FROM pastes WHERE id = ?', (paste_id,))
     result = c.fetchone()
-    conn.close()
     if result:
         try:
             decrypted_content = fernet.decrypt(result[0]).decode()
         except Exception:
+            conn.close()
             return redirect('/')
+        burn = result[1]
+        if burn and not session.pop(f'viewed_{paste_id}', None):
+            c.execute('DELETE FROM pastes WHERE id = ?', (paste_id,))
+            conn.commit()
+        conn.close()
         raw = render_template('raw.txt', content=decrypted_content)
         response = make_response(raw)
         response.headers['Content-Type'] = 'text/plain'
         return response
     else:
+        conn.close()
         return redirect('/')
 
 class PasteForm(FlaskForm):
     paste_content = TextAreaField('Paste', validators=[DataRequired()])
+    burn_after_reading = BooleanField('Burn after reading')
 
 def daily_cleanup():
     while True:
