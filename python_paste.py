@@ -1,12 +1,10 @@
+import os, sqlite3, uuid
 from flask import Flask, request, render_template, make_response, redirect, url_for
-import sqlite3
-import uuid
 from flask_limiter import Limiter
 from datetime import datetime, timedelta
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField
 from wtforms.validators import DataRequired
-import os
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet
 
@@ -72,7 +70,7 @@ def delete_pastes(days=90):
     conn.close()
 
 @app.route('/', methods=['GET', 'POST'])
-@limiter.limit("120 per minute")
+@limiter.limit("60 per minute")
 def index():
     allowed_domain = os.getenv('ALLOWED_DOMAIN')
     form = PasteForm()
