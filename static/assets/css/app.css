@@ -131,3 +131,7 @@ td.hljs-ln-numbers {
 code.hljs {
     padding: 0 !important;
 }
+
+.hljs-copy-wrapper {
+    margin-right: 8px !important;
+}
