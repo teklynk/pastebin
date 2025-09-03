@@ -3,7 +3,7 @@
 A simple, self-hosted pastebin web application built with Flask.  
 Supports rate limiting, CSRF protection, encrypted contents and automatic cleanup of old pastes.
 
-[pastebin_demo.webm](https://github.com/teklynk/pastebin/blob/main/pastebin_demo.webm?raw=true)
+[pastebin_demo.webm](https://github.com/user-attachments/assets/6f51e04f-1be2-40f3-b7f8-697d5c20d878)
 
 ## Features
 
