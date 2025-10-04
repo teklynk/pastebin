@@ -1,24 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-
 {% include 'includes/header.html' %}
 
-<body>
-    <form method="post" id="pastebin-form">
-        {{ form.csrf_token }}
-        <div class="sticky-button">
-            <input id="burn_after_reading" name="burn_after_reading" type="checkbox" value="y"> <label for="burn_after_reading">Burn after reading</label>
-            <button class="btn" type="submit" form="pastebin-form" formtarget="_self">Save</button>
-        </div>
-        <div>
-            <textarea placeholder="Paste here and click Save" spellcheck="false" autocorrect="off" autocapitalize="off"
-                autofocus class="pastebin-textarea" name="paste_content" id="paste_content" rows="10" cols="80"
-                tabindex="0"></textarea>
-        </div>
-    </form>
+<form method="post" id="pastebin-form">
+    {{ form.csrf_token }}
+    <div class="sticky-button">
+        <input id="burn_after_reading" name="burn_after_reading" type="checkbox" value="y"> <label for="burn_after_reading">Burn after reading</label>
+        <button class="btn" type="submit" form="pastebin-form" formtarget="_self">Save</button>
+    </div>
+    <div>
+        <textarea placeholder="Paste here and click Save" spellcheck="false" autocorrect="off" autocapitalize="off"
+            autofocus class="pastebin-textarea" name="paste_content" id="paste_content" rows="10" cols="80"
+            tabindex="0"></textarea>
+    </div>
+</form>
 
-    {% include 'includes/footer.html' %}
-
-</body>
-
-</html>
+{% include 'includes/footer.html' %}

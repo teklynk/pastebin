@@ -1,21 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-
 {% include 'includes/header.html' %}
 
-<body>
-    <div class="sticky-button">
-        <a href="/"><button class="btn" type="button">Create</button></a>
-        <a href="/raw/{{ paste_id }}"><button class="btn" type="button">Raw</button></a>
-    </div>
-    <div class="pastebin-view">
-        <pre tabindex="0">
-            <code>{{ content }}</code>
-        </pre>
-    </div>
+<div class="sticky-button">
+    <a href="/"><button class="btn" type="button">Create</button></a>
+    <a href="/raw/{{ paste_id }}"><button class="btn" type="button">Raw</button></a>
+</div>
+<div class="pastebin-view">
+    <pre tabindex="0">
+        <code>{{ content }}</code>
+    </pre>
+</div>
 
-    {% include 'includes/footer.html' %}
-    
-</body>
-
-</html>
+{% include 'includes/footer.html' %}
