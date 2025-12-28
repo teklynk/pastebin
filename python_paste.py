@@ -93,7 +93,7 @@ def index():
             burn = 1 if form.burn_after_reading.data else 0
             views_left = BURN_VIEWS if burn else None
             encrypted_content = fernet.encrypt(content.encode())
-            paste_id = str(uuid.uuid4())[:8]
+            paste_id = str(uuid.uuid4())[:32]
             conn = sqlite3.connect('pastebin.db')
             c = conn.cursor()
             c.execute('INSERT INTO pastes (id, content, burn_after_reading, views_left) VALUES (?, ?, ?, ?)', (paste_id, encrypted_content, burn, views_left))
