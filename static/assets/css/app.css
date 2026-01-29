@@ -135,3 +135,38 @@ code.hljs {
 .hljs-copy-wrapper {
     margin-right: 8px !important;
 }
+
+.vertical-align-middle {
+  vertical-align: middle;
+}
+
+.vertical-align-baseline {
+  vertical-align: baseline;
+}
+
+/** Markdown styling **/
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #839496;
+    background: transparent;
+    position: relative;
+    vertical-align: middle;
+    margin-right: 5px;
+    cursor: default;
+}
+
+input[type="checkbox"]:checked::after {
+    /* Use a single backslash for the unicode character */
+    content: "\2714";
+    /* A green from the syntax highlight theme */
+    color: #98c379;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    pointer-events: none;
+}

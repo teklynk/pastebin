@@ -3,8 +3,8 @@
 <form method="post" id="pastebin-form">
     {{ form.csrf_token }}
     <div class="sticky-button">
-        <input id="burn_after_reading" name="burn_after_reading" type="checkbox" value="y"> <label for="burn_after_reading">Burn after reading</label>
-        <button class="btn" type="submit" form="pastebin-form" formtarget="_self">Save</button>
+        <input id="burn_after_reading" name="burn_after_reading" type="checkbox" class="vertical-align-middle" value="y"> <label for="burn_after_reading">Burn after reading</label>
+        <button class="btn vertical-align-baseline" type="submit" form="pastebin-form" formtarget="_self">Save</button>
     </div>
     <div>
         <textarea placeholder="Paste here and click Save" spellcheck="false" autocorrect="off" autocapitalize="off"
