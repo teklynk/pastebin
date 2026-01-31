@@ -153,7 +153,7 @@ def raw_paste(paste_id):
         conn.close()
         raw = render_template('raw.txt', content=decrypted_content)
         response = make_response(raw)
-        response.headers['Content-Type'] = 'text/plain'
+        response.headers['Content-Type'] = 'text/plain; charset=utf-8'
         return response
     else:
         conn.close()
