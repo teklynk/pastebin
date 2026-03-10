@@ -1,27 +1,34 @@
 body {
-  background: #1f232b;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Noto Sans, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  background: #181821;
+  color: #ddd9e8;
   padding: 10px;
   margin: 0px;
-  color: #839496;
-  font-family: monospace;
-  font-size: .9rem;
+  font-size: 1rem;
 }
 
 footer {
   a {
     &:link {
-      color: #839496;
+      color: #ddd9e8;
       text-decoration: none;
     }
+
     &:visited {
-      color: #839496;
+      color: #ddd9e8;
       text-decoration: none;
     }
+
     &:hover {
-      color: #839496;
+      color: #ddd9e8;
       text-decoration: underline;
     }
   }
+}
+
+div.pastebin-view {
+  margin-top: 7vh;
+  min-height: 75vh;
 }
 
 @media only screen and (max-width: 768px) {
@@ -31,25 +38,38 @@ footer {
 }
 
 textarea.pastebin-textarea {
+  font-size: 1em;
   background: transparent;
   border: 0px;
-  color: #fff;
+  color: #ddd9e8;
   padding: 0px;
   width: 100%;
   height: 100%;
   outline: none;
   min-height: 75vh;
+  margin-top: 7vh;
   resize: none;
-  margin-top: 50px;
-}
-
-div.pastebin-view {
-  margin-top: 50px;
-  min-height: 75vh;
 }
 
 .text-center {
   text-align: center !important;
+}
+
+a,
+a:link,
+a:hover,
+a:focus {
+  text-decoration: underline !important;
+  color: #a0a1ff !important;
+}
+
+ol, ul {
+  padding-left: 2rem;
+}
+
+li p {
+  margin-block-start: 0;
+  margin-block-end: 0;
 }
 
 .mt-0 {
@@ -104,12 +124,17 @@ div.pastebin-view {
   margin-bottom: auto !important;
 }
 
+.muted {
+  color: #606085 !important;
+}
+
 .btn {
   padding: 0.5rem 1rem;
+  margin-bottom: 10px;
   font-size: 1rem;
   border: none;
-  background-color: #474747;
-  color: #fff;
+  background-color: #282c34;
+  color: #eee;
   cursor: pointer;
 }
 
@@ -121,19 +146,11 @@ div.pastebin-view {
 }
 
 .hljs {
-  background: transparent !important;
+  background: #292938 !important;
 }
 
 td.hljs-ln-numbers {
   padding-right: 20px !important;
-}
-
-code.hljs {
-    padding: 0 !important;
-}
-
-.hljs-copy-wrapper {
-    margin-right: 8px !important;
 }
 
 .vertical-align-middle {
@@ -169,4 +186,11 @@ input[type="checkbox"]:checked::after {
     transform: translate(-50%, -50%);
     font-size: 18px;
     pointer-events: none;
+}
+
+@media screen and (max-width: 768px) {
+  .sticky-button .btn {
+    font-size: 1.0rem;
+    padding: 4px 8px 4px 8px;
+  }
 }
