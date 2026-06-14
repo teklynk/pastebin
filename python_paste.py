@@ -3,11 +3,12 @@ from flask import Flask, request, render_template, make_response, redirect, url_
 from flask_limiter import Limiter
 from datetime import datetime, timedelta
 from flask_wtf import FlaskForm
-from wtforms import TextAreaField, SelectField
+from wtforms import TextAreaField
 from wtforms.validators import DataRequired
 from wtforms import BooleanField
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet
+import markdown
 
 # Check if .env exists (local mode)
 LOCAL_MODE = os.path.exists('.env')
@@ -56,8 +57,7 @@ def init_db():
             content TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             burn_after_reading INTEGER DEFAULT 0,
-            views_left INTEGER DEFAULT 3,
-            language TEXT DEFAULT "none"
+            views_left INTEGER DEFAULT 3
         )
     ''')
     conn.commit()
@@ -91,14 +91,13 @@ def index():
             return "Forbidden: Invalid origin", 403
         if form.validate_on_submit():
             content = form.paste_content.data
-            language = form.language.data or "none"
             burn = 1 if form.burn_after_reading.data else 0
             views_left = BURN_VIEWS if burn else None
             encrypted_content = fernet.encrypt(content.encode())
             paste_id = str(uuid.uuid4())[:32]
             conn = sqlite3.connect('pastebin.db')
             c = conn.cursor()
-            c.execute('INSERT INTO pastes (id, content, burn_after_reading, views_left, language) VALUES (?, ?, ?, ?, ?)', (paste_id, encrypted_content, burn, views_left, language))
+            c.execute('INSERT INTO pastes (id, content, burn_after_reading, views_left) VALUES (?, ?, ?, ?)', (paste_id, encrypted_content, burn, views_left))
             conn.commit()
             conn.close()
             return redirect(url_for('view_paste', paste_id=paste_id))
@@ -108,17 +107,16 @@ def index():
 def view_paste(paste_id):
     conn = sqlite3.connect('pastebin.db')
     c = conn.cursor()
-    c.execute('SELECT content, burn_after_reading, views_left, language FROM pastes WHERE id = ?', (paste_id,))
+    c.execute('SELECT content, burn_after_reading, views_left FROM pastes WHERE id = ?', (paste_id,))
     result = c.fetchone()
     if result:
         try:
-            decrypted_content = fernet.decrypt(result[0]).decode()
-        except Exception:
+            decrypted_content = fernet.decrypt(result[0]).decode('utf-8')
+        except Exception as e:
+            print(f"Decryption error: {e}")
             conn.close()
             return redirect('/')
-        burn = result[1]
-        views_left = result[2]
-        language = result[3]
+        _, burn, views_left = result
         if burn and views_left is not None:
             views_left -= 1
             if views_left <= 0:
@@ -127,7 +125,10 @@ def view_paste(paste_id):
                 c.execute('UPDATE pastes SET views_left = ? WHERE id = ?', (views_left, paste_id))
             conn.commit()
         conn.close()
-        return render_template('view.html', content=decrypted_content, paste_id=paste_id, language=language)
+        
+        # Render markdown content to HTML
+        content_html = markdown.markdown(decrypted_content, extensions=['fenced_code', 'tables', 'nl2br'])
+        return render_template('view.html', content=content_html, paste_id=paste_id)
     else:
         conn.close()
         return redirect('/')
@@ -140,12 +141,11 @@ def raw_paste(paste_id):
     result = c.fetchone()
     if result:
         try:
-            decrypted_content = fernet.decrypt(result[0]).decode()
+            decrypted_content = fernet.decrypt(result[0]).decode('utf-8')
         except Exception:
             conn.close()
             return redirect('/')
-        burn = result[1]
-        views_left = result[2]
+        _, burn, views_left = result
         if burn and views_left is not None:
             views_left -= 1
             if views_left <= 0:
@@ -165,15 +165,6 @@ def raw_paste(paste_id):
 class PasteForm(FlaskForm):
     paste_content = TextAreaField('Paste', validators=[DataRequired()])
     burn_after_reading = BooleanField('Burn after reading')
-    language = SelectField('Language', choices=[
-        ('none', 'Plain Text'),
-        ('python', 'Python'),
-        ('javascript', 'JavaScript'),
-        ('json', 'JSON'),
-        ('html', 'HTML'),
-        ('css', 'CSS'),
-        ('clike', 'C-like')
-    ], default='none')
 
 def daily_cleanup():
     while True:

@@ -5,7 +5,8 @@
         <a href="/raw/{{ paste_id }}"><button class="btn vertical-align-baseline" type="button">Raw</button></a>
     </div>
     <div class="pastebin-view">
-        <pre class="line-numbers"><code class="language-{{ language }}">{{ content }}</code></pre>
+        {# Rendered markdown content from the server #}
+        {{ content|safe }}
     </div>
     
 {% include 'includes/footer.html' %}

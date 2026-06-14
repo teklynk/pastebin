@@ -194,7 +194,7 @@ pre[class*=language-] {
 }
 
 @media screen and (max-width: 768px) {
-  .sticky-button .btn {
+  .sticky-button .btn, select {
     font-size: 1.0rem;
     padding: 4px 8px 4px 8px;
   }

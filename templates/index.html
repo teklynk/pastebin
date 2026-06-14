@@ -7,7 +7,6 @@
         <button class="btn vertical-align-baseline" type="submit" form="pastebin-form" formtarget="_self">Save</button>
     </div>
     <div class="mt-2">
-        {{ form.language(id="language") }}
         {{ form.paste_content(placeholder="Paste here and click Save", spellcheck="false", 
            autofocus=true, class="pastebin-textarea", id="paste_content", rows="10", cols="80") }}
     </div>

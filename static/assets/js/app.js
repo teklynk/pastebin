@@ -16,4 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
         textarea.addEventListener('input', () => autoGrowTextarea(textarea));
         autoGrowTextarea(textarea);
     }
+
+    // Initialize PrismJS for Markdown-generated blocks
+    const codeBlocks = document.querySelectorAll('pre');
+    if (codeBlocks.length > 0) {
+        codeBlocks.forEach((pre) => {
+            pre.classList.add('line-numbers');
+        });
+        Prism.highlightAll();
+    }
 });
