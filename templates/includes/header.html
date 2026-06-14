@@ -13,16 +13,9 @@
     <link rel="manifest" href="{{ url_for('static', filename='assets/site.webmanifest') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/atom-one-dark.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/highlightjs-copy.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/prism.css') }}">
     <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/highlight.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/highlightjs-line-numbers.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/highlightjs-copy.min.js') }}"></script>
-    <script>
-        hljs.highlightAll();
-        hljs.initLineNumbersOnLoad();
-        hljs.addPlugin(new CopyButtonPlugin());
-    </script>
+    <script src="{{ url_for('static', filename='assets/js/prism.js') }}"></script>
     <!-- Made with love by Teklynk: https://github.com/teklynk/pastebin -->
 </head>
 <body>

@@ -1,11 +1,11 @@
 {% include 'includes/header.html' %}
+
     <div class="sticky-button">
         <a href="/"><button class="btn vertical-align-baseline" type="button">Create</button></a>
         <a href="/raw/{{ paste_id }}"><button class="btn vertical-align-baseline" type="button">Raw</button></a>
     </div>
     <div class="pastebin-view">
-        <pre tabindex="0">
-            <code>{{ content|safe }}</code>
-        </pre>
+        <pre class="line-numbers"><code class="language-{{ language }}">{{ content }}</code></pre>
     </div>
+    
 {% include 'includes/footer.html' %}

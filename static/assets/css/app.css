@@ -145,14 +145,6 @@ li p {
   z-index: 1000;
 }
 
-.hljs {
-  background: #292938 !important;
-}
-
-td.hljs-ln-numbers {
-  padding-right: 20px !important;
-}
-
 .vertical-align-middle {
   vertical-align: middle;
 }
@@ -186,6 +178,19 @@ input[type="checkbox"]:checked::after {
     transform: translate(-50%, -50%);
     font-size: 18px;
     pointer-events: none;
+}
+
+select {
+    padding: 0.5rem;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    border: none;
+    background-color: #282c34;
+    color: #eee;
+}
+
+pre[class*=language-] {
+    background: #292938 !important;
 }
 
 @media screen and (max-width: 768px) {

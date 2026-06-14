@@ -6,10 +6,10 @@
         <input id="burn_after_reading" name="burn_after_reading" type="checkbox" class="vertical-align-middle" value="y"> <label for="burn_after_reading">Burn after reading</label>
         <button class="btn vertical-align-baseline" type="submit" form="pastebin-form" formtarget="_self">Save</button>
     </div>
-    <div>
-        <textarea placeholder="Paste here and click Save" spellcheck="false" autocorrect="off" autocapitalize="off"
-            autofocus class="pastebin-textarea" name="paste_content" id="paste_content" rows="10" cols="80"
-            tabindex="0" required></textarea>
+    <div class="mt-2">
+        {{ form.language(id="language") }}
+        {{ form.paste_content(placeholder="Paste here and click Save", spellcheck="false", 
+           autofocus=true, class="pastebin-textarea", id="paste_content", rows="10", cols="80") }}
     </div>
 </form>
 
